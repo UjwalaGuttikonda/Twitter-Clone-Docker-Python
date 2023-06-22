@@ -1,0 +1,91 @@
+{% extends "base.html" %} 
+{% block title %}Home{% endblock %} 
+
+{% block content %}
+<div class="row">
+  <div class="col-md-4">
+    <!-- Follow section -->
+    <h2>Follow</h2>
+    <div class="input-group mb-3">
+      <!-- Follow form -->
+      <form method="POST" style="display: flex;">
+        <input type="text" name="user_follow" id="user_follow" class="form-control" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="submit">Follow</button>
+        </div>
+      </form>
+    </div>    
+
+    
+    <h2>Search</h2>
+    <div class="input-group mb-3">
+      <!-- Search form -->
+      <form method="POST" style="display: flex;">
+        <input type="text" name="search_tweet" id="search_tweet" class="form-control" placeholder="Search" aria-label="Search">
+        <button class="btn btn-primary" type="submit">Go</button>
+      </form>
+    </div>
+    {% if search_results %}
+    <h3>Search Results:</h3>
+    <ul>
+      {% for result in search_results %}
+        <li>{{ result.data }}</li>
+      {% endfor %}
+    </ul>
+    {% elif no_results_found %}
+    <p>No results found.</p>
+    {% endif %}
+  </div>
+  <div class="col-md-8">
+
+<!-- Post a tweet section -->  
+    <h2>Post a Tweet</h2>
+    <ul class="list-group list-group-flush" id="notes">
+      {% for note in user.notes %}
+        <li class="list-group-item">
+          {{ note.data }}
+        </li>
+      {% endfor %}
+      {% for retweet in retweeted_notes %}
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-10">
+              <div class="tweet">
+                <p>{{ retweet.data }}</p>
+              </div>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <form method="POST">
+      <textarea name="note" id="note" class="form-control"></textarea>
+      <br />
+      <div align="center">
+        <button type="submit" class="btn btn-primary">Tweet</button>
+      </div>
+    </form>
+    <!-- Live Feed section -->
+    <h2>Live Feed</h2>
+    <ul class="list-group list-group-flush" id="timeline">
+      {% for tweet in followed_tweets %}
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-10">
+            <div class="tweet">
+              <p>{{ tweet.data }}</p>
+            </div>
+          </div>
+          <div class="col-2">
+            <form method="post" action="/">
+              <input type="hidden" name="retweet" value="{{ tweet.id }}">
+              <button type="submit" class="btn btn-primary retweet-button">Retweet</button>
+            </form>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
